@@ -30,8 +30,6 @@
       --border: #e0e6ed;
       --gold: #c48a3a;
       --coral: #d45a4c;
-      --up: #26a69a;
-      --down: #ef5350;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; overflow: hidden; }
@@ -43,105 +41,63 @@
       padding: 10px 16px;
       flex-shrink: 0;
     }
-    .top-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .logo {
-      font-weight: 650;
-      font-size: 1.05rem;
-      letter-spacing: -0.3px;
-      color: var(--gold);
-    }
-    .symbol-info {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-left: 8px;
-    }
-    .symbol-name {
-      font-weight: 600;
-      font-size: 1rem;
-    }
-    #priceInfo {
-      font-size: 0.95rem;
-      font-weight: 550;
-      font-variant-numeric: tabular-nums;
-    }
-    #status {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-left: auto;
-    }
+    .top-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .logo { font-weight: 650; font-size: 1.05rem; letter-spacing: -0.3px; color: var(--gold); }
+    .symbol-info { display: flex; align-items: baseline; gap: 10px; margin-left: 8px; }
+    .symbol-name { font-weight: 600; font-size: 1rem; }
+    #priceInfo { font-size: 0.95rem; font-weight: 550; font-variant-numeric: tabular-nums; }
+    #status { font-size: 0.7rem; color: var(--text-muted); margin-left: auto; }
     .theme-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 5px 12px;
-      border-radius: 6px;
-      font-size: 0.7rem;
-      cursor: pointer;
+      background: transparent; border: 1px solid var(--border); color: var(--text);
+      padding: 5px 12px; border-radius: 6px; font-size: 0.7rem; cursor: pointer;
     }
     .theme-btn:hover { background: var(--bg3); }
 
-    .toolbar {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
+    .toolbar { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
     .btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
     button.tf, button.pair, .replay-controls button {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid transparent;
-      padding: 5px 10px;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      cursor: pointer;
-      transition: all 0.12s;
+      background: transparent; color: var(--text-muted); border: 1px solid transparent;
+      padding: 5px 10px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; transition: all 0.12s;
     }
     button.tf.active, button.pair.active,
     button.tf:hover, button.pair:hover,
     .replay-controls button:hover {
-      background: var(--bg3);
-      color: var(--text);
-      border-color: var(--border);
+      background: var(--bg3); color: var(--text); border-color: var(--border);
     }
     button.tf.active, button.pair.active {
-      background: var(--gold);
-      color: #0c1116;
-      border-color: var(--gold);
+      background: var(--gold); color: #0c1116; border-color: var(--gold);
     }
 
-    .replay-controls {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-      margin-left: auto;
-    }
-    .replay-controls button {
-      min-width: 52px;
-      padding: 5px 8px;
-      font-size: 0.68rem;
-    }
+    .replay-controls { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+    .replay-controls button { min-width: 52px; padding: 5px 8px; font-size: 0.68rem; }
     #replayInfo { font-size: 0.65rem; color: var(--text-muted); margin-left: 8px; }
 
-    .legend {
-      display: flex;
-      gap: 14px;
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
+    .legend { display: flex; gap: 14px; font-size: 0.65rem; color: var(--text-muted); margin-top: 8px; flex-wrap: wrap; }
     .legend span { display: flex; align-items: center; gap: 5px; }
     .dot { width: 8px; height: 8px; border-radius: 50%; }
 
     #chart { flex: 1; width: 100%; min-height: 0; background: var(--bg); }
+
+    .bottom-bar {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    #dateTime {
+      font-weight: 550;
+      font-variant-numeric: tabular-nums;
+    }
+    #ohlc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
 
     @media (max-width: 700px) {
       header { padding: 8px 12px; }
@@ -151,6 +107,8 @@
       .toolbar { gap: 6px; margin-top: 8px; }
       .replay-controls { margin-left: 0; width: 100%; }
       .replay-controls button { min-width: 48px; padding: 4px 6px; font-size: 0.64rem; }
+      .bottom-bar { padding: 6px 12px; font-size: 0.72rem; }
+      #ohlc { font-size: 0.65rem; }
     }
   </style>
 </head>
@@ -203,6 +161,11 @@
     </header>
 
     <div id="chart"></div>
+
+    <div class="bottom-bar">
+      <span id="dateTime">—</span>
+      <span id="ohlc">—</span>
+    </div>
   </div>
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
@@ -214,6 +177,8 @@
     const symbolName = document.getElementById('symbolName');
     const themeBtn = document.getElementById('themeBtn');
     const replayInfo = document.getElementById('replayInfo');
+    const dateTimeEl = document.getElementById('dateTime');
+    const ohlcEl = document.getElementById('ohlc');
 
     let chart, candleSeries, volumeSeries, sessionSeries, markers = [];
     let fullData = [], visibleCount = 0, playing = false, playTimer = null, replayMode = false;
@@ -235,6 +200,29 @@
       '4h':  { interval: '1d',  range: '5y' },
       '1d':  { interval: '1d',  range: '10y' },
     };
+
+    function formatDateTime(timestamp) {
+      const d = new Date(timestamp * 1000);
+      const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+      const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const dayName = days[d.getUTCDay()];
+      const day = d.getUTCDate();
+      const month = months[d.getUTCMonth()];
+      const year = d.getUTCFullYear();
+      const hh = String(d.getUTCHours()).padStart(2, '0');
+      const mm = String(d.getUTCMinutes()).padStart(2, '0');
+      return `${dayName} ${day} ${month} ${year}  ${hh}:${mm} UTC`;
+    }
+
+    function updateBottomInfo(bar) {
+      if (!bar) {
+        dateTimeEl.textContent = '—';
+        ohlcEl.textContent = '—';
+        return;
+      }
+      dateTimeEl.textContent = formatDateTime(bar.time);
+      ohlcEl.textContent = `O ${bar.open.toFixed(5)}  H ${bar.high.toFixed(5)}  L ${bar.low.toFixed(5)}  C ${bar.close.toFixed(5)}`;
+    }
 
     function applyTheme(isLight) {
       document.body.classList.toggle('light', isLight);
@@ -262,17 +250,16 @@
           vertLines: { color: isLight ? '#e8eef5' : '#1a2330' },
           horzLines: { color: isLight ? '#e8eef5' : '#1a2330' },
         },
-        crosshair: {
-          mode: LightweightCharts.CrosshairMode.Normal,
-        },
+        crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
         rightPriceScale: {
           borderColor: '#2a3544',
-          scaleMargins: { top: 0.1, bottom: 0.2 },
+          scaleMargins: { top: 0.1, bottom: 0.15 },
         },
         timeScale: {
           borderColor: '#2a3544',
           timeVisible: true,
           secondsVisible: false,
+          rightOffset: 5,
         },
       });
 
@@ -290,7 +277,7 @@
         priceFormat: { type: 'volume' },
         priceScaleId: '',
       });
-      chart.priceScale('').applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } });
+      chart.priceScale('').applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } });
 
       sessionSeries = chart.addHistogramSeries({
         color: 'rgba(0,0,0,0)',
@@ -298,6 +285,16 @@
         priceFormat: { type: 'volume' },
       });
       chart.priceScale('left').applyOptions({ visible: false, scaleMargins: { top: 0, bottom: 0 } });
+
+      chart.subscribeCrosshairMove(param => {
+        if (!param.time || !fullData.length) {
+          const last = replayMode ? fullData[visibleCount - 1] : fullData.at(-1);
+          updateBottomInfo(last);
+          return;
+        }
+        const bar = fullData.find(b => b.time === param.time);
+        if (bar) updateBottomInfo(bar);
+      });
     }
 
     async function fetchYahooData(symbol, interval, range) {
@@ -360,6 +357,8 @@
       markSessions(slice);
       updatePriceInfo(slice);
       candleSeries.setMarkers(markers.filter(m => m.time <= (slice.at(-1)?.time || 0)));
+      const lastBar = slice.at(-1);
+      updateBottomInfo(lastBar);
       if (replayMode) {
         replayInfo.textContent = `${visibleCount}/${fullData.length}`;
       } else {
