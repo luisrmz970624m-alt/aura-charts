@@ -56,41 +56,34 @@
 
     .controls { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
     .btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
-    button.tf, button.pair {
+    button.tf, button.pair, .replay-bar button {
       background: var(--bg3); color: var(--text); border: 1px solid var(--border);
       padding: 5px 11px; border-radius: 8px; font-size: 0.72rem; cursor: pointer;
     }
-    button.tf.active, button.pair.active, button.tf:hover, button.pair:hover {
+    button.tf.active, button.pair.active, button.tf:hover, button.pair:hover,
+    .replay-bar button:hover {
       background: var(--gold); color: #0b0f14; border-color: var(--gold);
     }
 
-    #chart { flex: 1; width: 100%; min-height: 0; background: var(--bg); }
-
     .replay-bar {
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-      padding: 8px 12px;
       display: flex;
-      gap: 6px;
-      align-items: center;
+      gap: 5px;
       flex-wrap: wrap;
-      flex-shrink: 0;
+      align-items: center;
+      margin-top: 8px;
     }
-    .replay-bar button {
-      background: var(--bg3); color: var(--text); border: 1px solid var(--border);
-      padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; min-width: 64px;
-    }
-    .replay-bar button:hover { background: var(--gold); color: #0b0f14; border-color: var(--gold); }
-    #replayInfo { font-size: 0.68rem; color: var(--text-muted); margin-left: auto; }
+    .replay-bar button { min-width: 56px; padding: 5px 10px; font-size: 0.68rem; }
+    #replayInfo { font-size: 0.65rem; color: var(--text-muted); margin-left: auto; }
+
+    #chart { flex: 1; width: 100%; min-height: 0; background: var(--bg); }
 
     @media (max-width: 640px) {
       header { padding: 8px 12px; }
       .logo { font-size: 0.95rem; }
       #priceInfo { font-size: 0.78rem; }
-      .replay-bar { padding: 6px 10px; gap: 5px; }
-      .replay-bar button { min-width: 56px; padding: 5px 8px; font-size: 0.65rem; }
       .controls { gap: 6px; margin-top: 8px; }
       .legend { margin-top: 6px; gap: 10px; }
+      .replay-bar button { min-width: 50px; padding: 4px 8px; font-size: 0.64rem; }
     }
   </style>
 </head>
@@ -126,20 +119,19 @@
           <button class="pair" data-pair="GC=F">XAUUSD</button>
         </div>
       </div>
+      <div class="replay-bar">
+        <button id="btnStart">Inicio</button>
+        <button id="btnStep">Paso</button>
+        <button id="btnPlay">Play</button>
+        <button id="btnPause">Pausa</button>
+        <button id="btnMarkBuy">Compra</button>
+        <button id="btnMarkSell">Venta</button>
+        <button id="btnClear">Limpiar</button>
+        <span id="replayInfo">Historial</span>
+      </div>
     </header>
 
     <div id="chart"></div>
-
-    <div class="replay-bar">
-      <button id="btnStart">Inicio</button>
-      <button id="btnStep">Paso</button>
-      <button id="btnPlay">Play</button>
-      <button id="btnPause">Pausa</button>
-      <button id="btnMarkBuy">Compra</button>
-      <button id="btnMarkSell">Venta</button>
-      <button id="btnClear">Limpiar</button>
-      <span id="replayInfo">Historial</span>
-    </div>
   </div>
 
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
