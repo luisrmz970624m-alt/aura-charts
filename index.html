@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0c1116" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>AURA Charts</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --bg: #0c1116;
+      --bg2: #111820;
+      --bg3: #1a2330;
+      --text: #e7eef5;
+      --text-muted: #8a9bb0;
+      --border: #1e2a38;
+      --gold: #e3a45a;
+      --coral: #e36a5c;
+    }
+    body.light {
+      --bg: #f7f9fc;
+      --bg2: #ffffff;
+      --bg3: #eef2f7;
+      --text: #1a2330;
+      --text-muted: #5a6b7d;
+      --border: #e2e8f0;
+      --gold: #c48a3a;
+      --coral: #d45a4c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+    header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 12px 16px; flex-shrink: 0; }
+    .header-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .logo { font-weight: 650; font-size: 1.1rem; letter-spacing: -0.3px; }
+    .badge { background: var(--gold); color: #0c1116; font-size: 0.65rem; padding: 3px 9px; border-radius: 999px; font-weight: 600; }
+    #priceInfo { font-size: 0.95rem; font-weight: 550; font-variant-numeric: tabular-nums; }
+    #status { font-size: 0.72rem; color: var(--text-muted); }
+    .theme-btn { margin-left: auto; background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 6px 12px; border-radius: 8px; font-size: 0.72rem; cursor: pointer; }
+    .theme-btn:hover { background: var(--gold); color: #0c1116; border-color: var(--gold); }
+    .legend { display: flex; gap: 14px; font-size: 0.68rem; color: var(--text-muted); margin-top: 10px; flex-wrap: wrap; }
+    .legend span { display: flex; align-items: center; gap: 5px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .controls { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+    .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    button.tf, button.pair { background: var(--bg3); color: var(--text); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; }
+    button.tf.active, button.pair.active, button.tf:hover, button.pair:hover { background: var(--gold); color: #0c1116; border-color: var(--gold); }
+    #chart { flex: 1; width: 100%; min-height: 0; background: var(--bg); }
+    .replay-bar { background: var(--bg2); border-top: 1px solid var(--border); padding: 12px 16px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex-shrink: 0; }
+    .replay-bar button { background: var(--bg3); color: var(--text); border: 1px solid var(--border); padding: 7px 14px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; min-width: 78px; }
+    .replay-bar button:hover { background: var(--gold); color: #0c1116; border-color: var(--gold); }
+    #replayInfo { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; }
+    @media (min-width: 900px) { header { padding: 14px 28px; } .replay-bar { padding: 14px 28px; } #priceInfo { font-size: 1.05rem; } }
+    @media (max-width: 640px) { .logo { font-size: 1rem; } #priceInfo { font-size: 0.82rem; } .replay-bar button { min-width: 64px; padding: 6px 10px; font-size: 0.7rem; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="header-top">
+        <span class="logo">AURA Charts</span>
+        <span class="badge">App</span>
+        <span id="priceInfo">—</span>
+        <span id="status">Cargando…</span>
+        <button class="theme-btn" id="themeBtn">Claro</button>
+      </div>
+      <div class="legend">
+        <span><i class="dot" style="background:#5b8cff"></i> Tokio</span>
+        <span><i class="dot" style="background:#7eb6ff"></i> Londres</span>
+        <span><i class="dot" style="background:#e3a45a"></i> NY</span>
+        <span><i class="dot" style="background:#e36a5c"></i> -20m NY</span>
+      </div>
+      <div class="controls">
+        <div class="btn-group" id="timeframes">
+          <button class="tf" data-tf="1m">1m</button>
+          <button class="tf" data-tf="5m">5m</button>
+          <button class="tf active" data-tf="15m">15m</button>
+          <button class="tf" data-tf="1h">1H</button>
+          <button class="tf" data-tf="4h">4H</button>
+          <button class="tf" data-tf="1d">1D</button>
+        </div>
+        <div class="btn-group" id="pairs">
+          <button class="pair active" data-pair="EURUSD=X">EURUSD</button>
+          <button class="pair" data-pair="GBPUSD=X">GBPUSD</button>
+          <button class="pair" data-pair="USDJPY=X">USDJPY</button>
+          <button class="pair" data-pair="GC=F">XAUUSD</button>
+        </div>
+      </div>
+    </header>
+    <div id="chart"></div>
+    <div class="replay-bar">
+      <button id="btnStart">Inicio Replay</button>
+      <button id="btnStep">Paso ▶</button>
+      <button id="btnPlay">Play</button>
+      <button id="btnPause">Pausa</button>
+      <button id="btnMarkBuy">Compra</button>
+      <button id="btnMarkSell">Venta</button>
+      <button id="btnClear">Limpiar</button>
+      <span id="replayInfo">Historial completo</span>
+    </div>
+  </div>
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+    const container = document.getElementById('chart');
+    const statusEl = document.getElementById('status');
+    const priceInfo = document.getElementById('priceInfo');
+    const themeBtn = document.getElementById('themeBtn');
+    const replayInfo = document.getElementById('replayInfo');
+    let chart, candleSeries, volumeSeries, sessionSeries, markers = [];
+    let fullData = [], visibleCount = 0, playing = false, playTimer = null, replayMode = false;
+    let currentPair = localStorage.getItem('aura-pair') || 'EURUSD=X';
+    let currentTf = localStorage.getItem('aura-tf') || '15m';
+    const tfMap = {
+      '1m':  { interval: '1m',  range: '7d' },
+      '5m':  { interval: '5m',  range: '60d' },
+      '15m': { interval: '15m', range: '60d' },
+      '1h':  { interval: '60m', range: '2y' },
+      '4h':  { interval: '1d',  range: '5y' },
+      '1d':  { interval: '1d',  range: '10y' },
+    };
+    function applyTheme(isLight) {
+      document.body.classList.toggle('light', isLight);
+      themeBtn.textContent = isLight ? 'Oscuro' : 'Claro';
+      localStorage.setItem('aura-theme', isLight ? 'light' : 'dark');
+      if (chart) {
+        chart.applyOptions({
+          layout: { background: { color: isLight ? '#f7f9fc' : '#0c1116' }, textColor: isLight ? '#1a2330' : '#e7eef5' },
+          grid: { vertLines: { color: isLight ? '#e8eef5' : '#1a2330' }, horzLines: { color: isLight ? '#e8eef5' : '#1a2330' } },
+        });
+      }
+    }
+    function createChart() {
+      if (chart) chart.remove();
+      const isLight = document.body.classList.contains('light');
+      chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth, height: container.clientHeight,
+        layout: { background: { color: isLight ? '#f7f9fc' : '#0c1116' }, textColor: isLight ? '#1a2330' : '#e7eef5' },
+        grid: { vertLines: { color: isLight ? '#e8eef5' : '#1a2330' }, horzLines: { color: isLight ? '#e8eef5' : '#1a2330' } },
+        rightPriceScale: { borderColor: '#2a3544' },
+        timeScale: { borderColor: '#2a3544', timeVisible: true, secondsVisible: false },
+      });
+      candleSeries = chart.addCandlestickSeries({ upColor: '#e3a45a', downColor: '#e36a5c', borderUpColor: '#e3a45a', borderDownColor: '#e36a5c', wickUpColor: '#e3a45a', wickDownColor: '#e36a5c' });
+      volumeSeries = chart.addHistogramSeries({ color: '#5b8cff', priceFormat: { type: 'volume' }, priceScaleId: '' });
+      chart.priceScale('').applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } });
+      sessionSeries = chart.addHistogramSeries({ color: 'rgba(0,0,0,0)', priceScaleId: 'left', priceFormat: { type: 'volume' } });
+      chart.priceScale('left').applyOptions({ visible: false, scaleMargins: { top: 0, bottom: 0 } });
+    }
+    async function fetchYahooData(symbol, interval, range) {
+      const url = `https://proxy.cors.dev/https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${interval}&range=${range}`;
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+      try {
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeout);
+        if (!res.ok) throw new Error('Error de red');
+        const json = await res.json();
+        const result = json.chart?.result?.[0];
+        if (!result) throw new Error('Sin datos');
+        const timestamps = result.timestamp || [];
+        const quote = result.indicators?.quote?.[0] || {};
+        const data = [], volData = [];
+        for (let i = 0; i < timestamps.length; i++) {
+          const o = quote.open?.[i], h = quote.high?.[i], l = quote.low?.[i], c = quote.close?.[i], v = quote.volume?.[i];
+          if (o == null || h == null || l == null || c == null) continue;
+          data.push({ time: timestamps[i], open: +o.toFixed(5), high: +h.toFixed(5), low: +l.toFixed(5), close: +c.toFixed(5) });
+          if (v != null) volData.push({ time: timestamps[i], value: v, color: c >= o ? '#e3a45a66' : '#e36a5c66' });
+        }
+        return { data, volData };
+      } catch (e) { clearTimeout(timeout); throw e; }
+    }
+    function getSessionColor(hourUTC, minuteUTC) {
+      if (hourUTC === 14 && minuteUTC >= 10 && minuteUTC < 30) return 'rgba(227, 106, 92, 0.35)';
+      if (hourUTC >= 0 && hourUTC < 9) return 'rgba(91, 140, 255, 0.16)';
+      if (hourUTC >= 8 && hourUTC < 17) return 'rgba(126, 182, 255, 0.14)';
+      if (hourUTC >= 14 && hourUTC < 21) return 'rgba(227, 164, 90, 0.16)';
+      return 'rgba(0,0,0,0)';
+    }
+    function markSessions(data) {
+      const sessionData = data.map(bar => {
+        const date = new Date(bar.time * 1000);
+        const color = getSessionColor(date.getUTCHours(), date.getUTCMinutes());
+        return { time: bar.time, value: color !== 'rgba(0,0,0,0)' ? 1 : 0, color };
+      });
+      sessionSeries.setData(sessionData);
+    }
+    function updatePriceInfo(data) {
+      if (!data.length) return;
+      const last = data[data.length - 1];
+      const prev = data[data.length - 2] || last;
+      const change = last.close - prev.close;
+      const pct = (change / prev.close) * 100;
+      const sign = change >= 0 ? '+' : '';
+      priceInfo.textContent = `${last.close.toFixed(5)}  ${sign}${change.toFixed(5)} (${sign}${pct.toFixed(2)}%)`;
+      priceInfo.style.color = change >= 0 ? '#e3a45a' : '#e36a5c';
+    }
+    function renderVisible() {
+      const slice = replayMode ? fullData.slice(0, visibleCount) : fullData;
+      const volSlice = fullData.volData ? (replayMode ? fullData.volData.slice(0, visibleCount) : fullData.volData) : [];
+      candleSeries.setData(slice);
+      volumeSeries.setData(volSlice);
+      markSessions(slice);
+      updatePriceInfo(slice);
+      candleSeries.setMarkers(markers.filter(m => m.time <= (slice.at(-1)?.time || 0)));
+      if (replayMode) {
+        replayInfo.textContent = `Replay · Vela ${visibleCount} / ${fullData.length}`;
+      } else {
+        replayInfo.textContent = `Historial completo · ${fullData.length} velas`;
+      }
+    }
+    async function loadData() {
+      statusEl.textContent = 'Cargando…';
+      const tf = tfMap[currentTf] || tfMap['15m'];
+      localStorage.setItem('aura-pair', currentPair);
+      localStorage.setItem('aura-tf', currentTf);
+      replayMode = false;
+      try {
+        const { data, volData } = await fetchYahooData(currentPair, tf.interval, tf.range);
+        if (!data.length) throw new Error('Sin datos');
+        fullData = data;
+        fullData.volData = volData;
+        visibleCount = data.length;
+        markers = [];
+        renderVisible();
+        chart.timeScale().fitContent();
+        statusEl.textContent = `${data.length} velas`;
+      } catch (err) {
+        statusEl.textContent = 'Error · reintentando…';
+        console.warn(err);
+        setTimeout(loadData, 5000);
+      }
+    }
+    function stepForward() {
+      if (!replayMode) { replayMode = true; visibleCount = Math.min(50, fullData.length); }
+      if (visibleCount < fullData.length) { visibleCount++; renderVisible(); }
+    }
+    function startReplay() {
+      if (!fullData.length) return;
+      replayMode = true;
+      visibleCount = Math.min(40, fullData.length);
+      markers = [];
+      renderVisible();
+    }
+    function play() {
+      if (playing || !fullData.length) return;
+      if (!replayMode) startReplay();
+      playing = true;
+      playTimer = setInterval(() => {
+        if (visibleCount >= fullData.length) { pause(); return; }
+        stepForward();
+      }, 280);
+    }
+    function pause() { playing = false; clearInterval(playTimer); }
+    function markTrade(type) {
+      if (!fullData.length) return;
+      const idx = replayMode ? visibleCount - 1 : fullData.length - 1;
+      if (idx < 0) return;
+      const bar = fullData[idx];
+      markers.push({ time: bar.time, position: type === 'buy' ? 'belowBar' : 'aboveBar', color: type === 'buy' ? '#e3a45a' : '#e36a5c', shape: type === 'buy' ? 'arrowUp' : 'arrowDown', text: type === 'buy' ? 'C' : 'V' });
+      renderVisible();
+    }
+    document.querySelectorAll('#pairs .pair').forEach(b => b.classList.toggle('active', b.dataset.pair === currentPair));
+    document.querySelectorAll('#timeframes .tf').forEach(b => b.classList.toggle('active', b.dataset.tf === currentTf));
+    if (localStorage.getItem('aura-theme') === 'light') applyTheme(true);
+    themeBtn.addEventListener('click', () => applyTheme(!document.body.classList.contains('light')));
+    createChart();
+    loadData();
+    document.getElementById('pairs').addEventListener('click', e => {
+      const btn = e.target.closest('button'); if (!btn) return;
+      currentPair = btn.dataset.pair;
+      document.querySelectorAll('#pairs .pair').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadData();
+    });
+    document.getElementById('timeframes').addEventListener('click', e => {
+      const btn = e.target.closest('button'); if (!btn) return;
+      currentTf = btn.dataset.tf;
+      document.querySelectorAll('#timeframes .tf').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadData();
+    });
+    document.getElementById('btnStart').onclick = startReplay;
+    document.getElementById('btnStep').onclick = stepForward;
+    document.getElementById('btnPlay').onclick = play;
+    document.getElementById('btnPause').onclick = pause;
+    document.getElementById('btnMarkBuy').onclick = () => markTrade('buy');
+    document.getElementById('btnMarkSell').onclick = () => markTrade('sell');
+    document.getElementById('btnClear').onclick = () => { markers = []; renderVisible(); };
+    window.addEventListener('resize', () => { chart.applyOptions({ width: container.clientWidth, height: container.clientHeight }); });
+  </script>
+</body>
+</html>
