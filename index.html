@@ -10,24 +10,28 @@
   <link rel="manifest" href="manifest.json" />
   <style>
     :root {
-      --bg: #0b0f14;
-      --bg2: #12181f;
-      --bg3: #1c242e;
-      --text: #e8eef6;
-      --text-muted: #8b9bb0;
-      --border: #243040;
+      --bg: #0c1116;
+      --bg2: #111820;
+      --bg3: #1a2330;
+      --text: #e7eef5;
+      --text-muted: #8a9bb0;
+      --border: #1e2a38;
       --gold: #e3a45a;
       --coral: #e36a5c;
+      --up: #26a69a;
+      --down: #ef5350;
     }
     body.light {
-      --bg: #f6f8fb;
+      --bg: #f5f7fa;
       --bg2: #ffffff;
       --bg3: #eef2f7;
       --text: #1a2330;
-      --text-muted: #5c6b7d;
-      --border: #e1e7ef;
+      --text-muted: #5a6b7d;
+      --border: #e0e6ed;
       --gold: #c48a3a;
       --coral: #d45a4c;
+      --up: #26a69a;
+      --down: #ef5350;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; overflow: hidden; }
@@ -36,74 +40,134 @@
     header {
       background: var(--bg2);
       border-bottom: 1px solid var(--border);
-      padding: 10px 14px;
+      padding: 10px 16px;
       flex-shrink: 0;
     }
-    .header-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .logo { font-weight: 650; font-size: 1.05rem; letter-spacing: -0.3px; }
-    .badge { background: var(--gold); color: #0b0f14; font-size: 0.62rem; padding: 3px 8px; border-radius: 999px; font-weight: 600; }
-    #priceInfo { font-size: 0.88rem; font-weight: 550; font-variant-numeric: tabular-nums; }
-    #status { font-size: 0.68rem; color: var(--text-muted); }
-    .theme-btn {
-      margin-left: auto; background: var(--bg3); border: 1px solid var(--border); color: var(--text);
-      padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer;
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
-    .theme-btn:hover { background: var(--gold); color: #0b0f14; border-color: var(--gold); }
+    .logo {
+      font-weight: 650;
+      font-size: 1.05rem;
+      letter-spacing: -0.3px;
+      color: var(--gold);
+    }
+    .symbol-info {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-left: 8px;
+    }
+    .symbol-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    #priceInfo {
+      font-size: 0.95rem;
+      font-weight: 550;
+      font-variant-numeric: tabular-nums;
+    }
+    #status {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+    .theme-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+    .theme-btn:hover { background: var(--bg3); }
 
-    .legend { display: flex; gap: 12px; font-size: 0.65rem; color: var(--text-muted); margin-top: 8px; flex-wrap: wrap; }
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
+    button.tf, button.pair, .replay-controls button {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    button.tf.active, button.pair.active,
+    button.tf:hover, button.pair:hover,
+    .replay-controls button:hover {
+      background: var(--bg3);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    button.tf.active, button.pair.active {
+      background: var(--gold);
+      color: #0c1116;
+      border-color: var(--gold);
+    }
+
+    .replay-controls {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+    .replay-controls button {
+      min-width: 52px;
+      padding: 5px 8px;
+      font-size: 0.68rem;
+    }
+    #replayInfo { font-size: 0.65rem; color: var(--text-muted); margin-left: 8px; }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
     .legend span { display: flex; align-items: center; gap: 5px; }
     .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-    .controls { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
-    .btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
-    button.tf, button.pair, .replay-bar button {
-      background: var(--bg3); color: var(--text); border: 1px solid var(--border);
-      padding: 5px 11px; border-radius: 8px; font-size: 0.72rem; cursor: pointer;
-    }
-    button.tf.active, button.pair.active, button.tf:hover, button.pair:hover,
-    .replay-bar button:hover {
-      background: var(--gold); color: #0b0f14; border-color: var(--gold);
-    }
-
-    .replay-bar {
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-top: 8px;
-    }
-    .replay-bar button { min-width: 56px; padding: 5px 10px; font-size: 0.68rem; }
-    #replayInfo { font-size: 0.65rem; color: var(--text-muted); margin-left: auto; }
-
     #chart { flex: 1; width: 100%; min-height: 0; background: var(--bg); }
 
-    @media (max-width: 640px) {
+    @media (max-width: 700px) {
       header { padding: 8px 12px; }
       .logo { font-size: 0.95rem; }
-      #priceInfo { font-size: 0.78rem; }
-      .controls { gap: 6px; margin-top: 8px; }
-      .legend { margin-top: 6px; gap: 10px; }
-      .replay-bar button { min-width: 50px; padding: 4px 8px; font-size: 0.64rem; }
+      .symbol-name { font-size: 0.9rem; }
+      #priceInfo { font-size: 0.82rem; }
+      .toolbar { gap: 6px; margin-top: 8px; }
+      .replay-controls { margin-left: 0; width: 100%; }
+      .replay-controls button { min-width: 48px; padding: 4px 6px; font-size: 0.64rem; }
     }
   </style>
 </head>
 <body>
   <div class="app">
     <header>
-      <div class="header-top">
-        <span class="logo">AURA Charts</span>
-        <span class="badge">App</span>
-        <span id="priceInfo">—</span>
+      <div class="top-bar">
+        <span class="logo">AURA</span>
+        <div class="symbol-info">
+          <span class="symbol-name" id="symbolName">EURUSD</span>
+          <span id="priceInfo">—</span>
+        </div>
         <span id="status">Cargando…</span>
         <button class="theme-btn" id="themeBtn">Claro</button>
       </div>
-      <div class="legend">
-        <span><i class="dot" style="background:#5b8cff"></i> Tokio</span>
-        <span><i class="dot" style="background:#7eb6ff"></i> Londres</span>
-        <span><i class="dot" style="background:#e3a45a"></i> NY</span>
-        <span><i class="dot" style="background:#e36a5c"></i> -20m NY</span>
-      </div>
-      <div class="controls">
+
+      <div class="toolbar">
         <div class="btn-group" id="timeframes">
           <button class="tf" data-tf="1m">1m</button>
           <button class="tf" data-tf="5m">5m</button>
@@ -118,16 +182,23 @@
           <button class="pair" data-pair="USDJPY=X">USDJPY</button>
           <button class="pair" data-pair="GC=F">XAUUSD</button>
         </div>
+        <div class="replay-controls">
+          <button id="btnStart">Inicio</button>
+          <button id="btnStep">Paso</button>
+          <button id="btnPlay">Play</button>
+          <button id="btnPause">Pausa</button>
+          <button id="btnMarkBuy">Compra</button>
+          <button id="btnMarkSell">Venta</button>
+          <button id="btnClear">Limpiar</button>
+          <span id="replayInfo"></span>
+        </div>
       </div>
-      <div class="replay-bar">
-        <button id="btnStart">Inicio</button>
-        <button id="btnStep">Paso</button>
-        <button id="btnPlay">Play</button>
-        <button id="btnPause">Pausa</button>
-        <button id="btnMarkBuy">Compra</button>
-        <button id="btnMarkSell">Venta</button>
-        <button id="btnClear">Limpiar</button>
-        <span id="replayInfo">Historial</span>
+
+      <div class="legend">
+        <span><i class="dot" style="background:#5b8cff"></i> Tokio</span>
+        <span><i class="dot" style="background:#7eb6ff"></i> Londres</span>
+        <span><i class="dot" style="background:#e3a45a"></i> Nueva York</span>
+        <span><i class="dot" style="background:#e36a5c"></i> -20m NY</span>
       </div>
     </header>
 
@@ -140,6 +211,7 @@
     const container = document.getElementById('chart');
     const statusEl = document.getElementById('status');
     const priceInfo = document.getElementById('priceInfo');
+    const symbolName = document.getElementById('symbolName');
     const themeBtn = document.getElementById('themeBtn');
     const replayInfo = document.getElementById('replayInfo');
 
@@ -147,6 +219,13 @@
     let fullData = [], visibleCount = 0, playing = false, playTimer = null, replayMode = false;
     let currentPair = localStorage.getItem('aura-pair') || 'EURUSD=X';
     let currentTf = localStorage.getItem('aura-tf') || '15m';
+
+    const pairLabels = {
+      'EURUSD=X': 'EURUSD',
+      'GBPUSD=X': 'GBPUSD',
+      'USDJPY=X': 'USDJPY',
+      'GC=F': 'XAUUSD'
+    };
 
     const tfMap = {
       '1m':  { interval: '1m',  range: '7d' },
@@ -163,7 +242,7 @@
       localStorage.setItem('aura-theme', isLight ? 'light' : 'dark');
       if (chart) {
         chart.applyOptions({
-          layout: { background: { color: isLight ? '#f6f8fb' : '#0b0f14' }, textColor: isLight ? '#1a2330' : '#e8eef6' },
+          layout: { background: { color: isLight ? '#f5f7fa' : '#0c1116' }, textColor: isLight ? '#1a2330' : '#e7eef5' },
           grid: { vertLines: { color: isLight ? '#e8eef5' : '#1a2330' }, horzLines: { color: isLight ? '#e8eef5' : '#1a2330' } },
         });
       }
@@ -173,16 +252,51 @@
       if (chart) chart.remove();
       const isLight = document.body.classList.contains('light');
       chart = LightweightCharts.createChart(container, {
-        width: container.clientWidth, height: container.clientHeight,
-        layout: { background: { color: isLight ? '#f6f8fb' : '#0b0f14' }, textColor: isLight ? '#1a2330' : '#e8eef6' },
-        grid: { vertLines: { color: isLight ? '#e8eef5' : '#1a2330' }, horzLines: { color: isLight ? '#e8eef5' : '#1a2330' } },
-        rightPriceScale: { borderColor: '#2a3544' },
-        timeScale: { borderColor: '#2a3544', timeVisible: true, secondsVisible: false },
+        width: container.clientWidth,
+        height: container.clientHeight,
+        layout: {
+          background: { color: isLight ? '#f5f7fa' : '#0c1116' },
+          textColor: isLight ? '#1a2330' : '#e7eef5',
+        },
+        grid: {
+          vertLines: { color: isLight ? '#e8eef5' : '#1a2330' },
+          horzLines: { color: isLight ? '#e8eef5' : '#1a2330' },
+        },
+        crosshair: {
+          mode: LightweightCharts.CrosshairMode.Normal,
+        },
+        rightPriceScale: {
+          borderColor: '#2a3544',
+          scaleMargins: { top: 0.1, bottom: 0.2 },
+        },
+        timeScale: {
+          borderColor: '#2a3544',
+          timeVisible: true,
+          secondsVisible: false,
+        },
       });
-      candleSeries = chart.addCandlestickSeries({ upColor: '#e3a45a', downColor: '#e36a5c', borderUpColor: '#e3a45a', borderDownColor: '#e36a5c', wickUpColor: '#e3a45a', wickDownColor: '#e36a5c' });
-      volumeSeries = chart.addHistogramSeries({ color: '#5b8cff', priceFormat: { type: 'volume' }, priceScaleId: '' });
-      chart.priceScale('').applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } });
-      sessionSeries = chart.addHistogramSeries({ color: 'rgba(0,0,0,0)', priceScaleId: 'left', priceFormat: { type: 'volume' } });
+
+      candleSeries = chart.addCandlestickSeries({
+        upColor: '#26a69a',
+        downColor: '#ef5350',
+        borderUpColor: '#26a69a',
+        borderDownColor: '#ef5350',
+        wickUpColor: '#26a69a',
+        wickDownColor: '#ef5350',
+      });
+
+      volumeSeries = chart.addHistogramSeries({
+        color: '#5b8cff',
+        priceFormat: { type: 'volume' },
+        priceScaleId: '',
+      });
+      chart.priceScale('').applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } });
+
+      sessionSeries = chart.addHistogramSeries({
+        color: 'rgba(0,0,0,0)',
+        priceScaleId: 'left',
+        priceFormat: { type: 'volume' },
+      });
       chart.priceScale('left').applyOptions({ visible: false, scaleMargins: { top: 0, bottom: 0 } });
     }
 
@@ -204,17 +318,17 @@
           const o = quote.open?.[i], h = quote.high?.[i], l = quote.low?.[i], c = quote.close?.[i], v = quote.volume?.[i];
           if (o == null || h == null || l == null || c == null) continue;
           data.push({ time: timestamps[i], open: +o.toFixed(5), high: +h.toFixed(5), low: +l.toFixed(5), close: +c.toFixed(5) });
-          if (v != null) volData.push({ time: timestamps[i], value: v, color: c >= o ? '#e3a45a66' : '#e36a5c66' });
+          if (v != null) volData.push({ time: timestamps[i], value: v, color: c >= o ? '#26a69a66' : '#ef535066' });
         }
         return { data, volData };
       } catch (e) { clearTimeout(timeout); throw e; }
     }
 
     function getSessionColor(hourUTC, minuteUTC) {
-      if (hourUTC === 14 && minuteUTC >= 10 && minuteUTC < 30) return 'rgba(227, 106, 92, 0.35)';
-      if (hourUTC >= 0 && hourUTC < 9) return 'rgba(91, 140, 255, 0.16)';
-      if (hourUTC >= 8 && hourUTC < 17) return 'rgba(126, 182, 255, 0.14)';
-      if (hourUTC >= 14 && hourUTC < 21) return 'rgba(227, 164, 90, 0.16)';
+      if (hourUTC === 14 && minuteUTC >= 10 && minuteUTC < 30) return 'rgba(227, 106, 92, 0.28)';
+      if (hourUTC >= 0 && hourUTC < 9) return 'rgba(91, 140, 255, 0.14)';
+      if (hourUTC >= 8 && hourUTC < 17) return 'rgba(126, 182, 255, 0.12)';
+      if (hourUTC >= 14 && hourUTC < 21) return 'rgba(227, 164, 90, 0.14)';
       return 'rgba(0,0,0,0)';
     }
 
@@ -235,7 +349,7 @@
       const pct = (change / prev.close) * 100;
       const sign = change >= 0 ? '+' : '';
       priceInfo.textContent = `${last.close.toFixed(5)}  ${sign}${change.toFixed(5)} (${sign}${pct.toFixed(2)}%)`;
-      priceInfo.style.color = change >= 0 ? '#e3a45a' : '#e36a5c';
+      priceInfo.style.color = change >= 0 ? '#26a69a' : '#ef5350';
     }
 
     function renderVisible() {
@@ -247,9 +361,9 @@
       updatePriceInfo(slice);
       candleSeries.setMarkers(markers.filter(m => m.time <= (slice.at(-1)?.time || 0)));
       if (replayMode) {
-        replayInfo.textContent = `Replay · ${visibleCount}/${fullData.length}`;
+        replayInfo.textContent = `${visibleCount}/${fullData.length}`;
       } else {
-        replayInfo.textContent = `Historial · ${fullData.length}`;
+        replayInfo.textContent = `${fullData.length} velas`;
       }
     }
 
@@ -258,7 +372,9 @@
       const tf = tfMap[currentTf] || tfMap['15m'];
       localStorage.setItem('aura-pair', currentPair);
       localStorage.setItem('aura-tf', currentTf);
+      symbolName.textContent = pairLabels[currentPair] || currentPair;
       replayMode = false;
+
       try {
         const { data, volData } = await fetchYahooData(currentPair, tf.interval, tf.range);
         if (!data.length) throw new Error('Sin datos');
@@ -268,9 +384,9 @@
         markers = [];
         renderVisible();
         chart.timeScale().fitContent();
-        statusEl.textContent = `${data.length} velas`;
+        statusEl.textContent = '';
       } catch (err) {
-        statusEl.textContent = 'Error · reintentando…';
+        statusEl.textContent = 'Error · reintentando';
         console.warn(err);
         setTimeout(loadData, 5000);
       }
@@ -306,7 +422,13 @@
       const idx = replayMode ? visibleCount - 1 : fullData.length - 1;
       if (idx < 0) return;
       const bar = fullData[idx];
-      markers.push({ time: bar.time, position: type === 'buy' ? 'belowBar' : 'aboveBar', color: type === 'buy' ? '#e3a45a' : '#e36a5c', shape: type === 'buy' ? 'arrowUp' : 'arrowDown', text: type === 'buy' ? 'C' : 'V' });
+      markers.push({
+        time: bar.time,
+        position: type === 'buy' ? 'belowBar' : 'aboveBar',
+        color: type === 'buy' ? '#26a69a' : '#ef5350',
+        shape: type === 'buy' ? 'arrowUp' : 'arrowDown',
+        text: type === 'buy' ? 'C' : 'V',
+      });
       renderVisible();
     }
 
@@ -341,7 +463,9 @@
     document.getElementById('btnMarkSell').onclick = () => markTrade('sell');
     document.getElementById('btnClear').onclick = () => { markers = []; renderVisible(); };
 
-    window.addEventListener('resize', () => { chart.applyOptions({ width: container.clientWidth, height: container.clientHeight }); });
+    window.addEventListener('resize', () => {
+      chart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+    });
   </script>
 </body>
 </html>
